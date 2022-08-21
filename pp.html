@@ -1,0 +1,144 @@
+
+<?php
+session_start();
+
+
+$email=$_SESSION["Email"];
+$new_post=$_POST["post"];
+if (isset($email))
+{
+    $con=mysqli_connect("localhost","root","","facebook_db");
+        if ($con)
+        {
+       
+           $q=mysqli_query($con,"SELECT Name FROM `users` WHERE Email='$email'  ");
+            if($q)
+            {
+            
+                while($row=mysqli_fetch_array($q))
+                { 
+                    //echo $row["id"]."<br>";
+                  //  echo "<h1>" . $row["Name"] . "</h1>";
+                    $name=$row["Name"];
+
+                }
+            }
+
+        }
+
+        if (isset($new_post) && isset($_POST['btn']))
+        {
+             
+               $con=mysqli_connect("localhost","root","","facebook_db");
+                if ($con)
+                {
+                
+                    $q=mysqli_query($con,"SELECT id FROM `users` WHERE Email='$email'  ");
+                    if($q)
+                    {
+                    
+                        while($row=mysqli_fetch_array($q))
+                        { 
+                            //echo $row["id"]."<br>";
+                            $userid = $row["id"];
+
+                            $q2=mysqli_query($con,"INSERT INTO `posts` (`user_id`, `post_desc`) VALUES ('$userid', '$new_post')" );
+
+                            if ($q2)
+                            {
+                               // echo " the post is inserted to database";
+                                mysqli_close($con);
+                            }
+                            else
+                            {     die ("can't insert post in db".mysqli_error($con));
+                               
+                            } 
+                        }           
+                    } 
+                }
+                else
+                {
+                    die("not connected".mysqli_errno());
+                }
+        }
+
+
+    echo "<a href='logout.php'> logout <a>";
+}
+  
+?>
+
+///////////////////////////////////viewlike.php
+<?php
+$news_id=$_GET["new_id"]; 
+
+
+if (isset($news_id) && is_numeric($news_id))
+{
+        $con=mysqli_connect("localhost","root","","facebook_db");
+        if ($con)
+        {
+            $q=mysqli_query($con,"SELECT * FROM `posts` WHERE `id` =$news_id");
+            if ($q)
+            {
+                
+                $row=mysqli_fetch_array($q);
+                
+                echo $row["like"]."<br><br>";
+                mysqli_close($con);
+                echo "<br><br><br><a href='profilepage.php'>back</a>";
+                        
+            }
+            else
+            {
+                echo "not selected";
+            }
+            mysqli_close($con);
+        }
+        else
+        {
+            die("not connected".mysqli_errno());
+        }
+}
+else
+{
+    echo "hacking";
+}
+
+
+?>
+
+////////////////////////////////////////////////////////////
+
+
+if (isset($news_id) && is_numeric($news_id))
+{
+        $con=mysqli_connect("localhost","root","","facebook_db");
+        if ($con)
+        {
+            $q=mysqli_query($con,"SELECT * FROM `posts` WHERE `id` =$news_id");
+            if ($q)
+            {
+                
+                $row=mysqli_fetch_array($q);
+                
+                echo $row["like"]."<br><br>";
+                mysqli_close($con);
+                echo "<br><br><br><a href='profilepage.php'>back</a>";
+                        
+            }
+            else
+            {
+                echo "not selected";
+            }
+            mysqli_close($con);
+        }
+        else
+        {
+            die("not connected".mysqli_errno());
+        }
+}
+else
+{
+    echo "hacking";
+}
